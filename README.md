@@ -5,29 +5,31 @@ To develop an LSTM-based model for recognizing the named entities in the text.
 
 ## Problem Statement and Dataset
 
+<img width="592" height="479" alt="image" src="https://github.com/user-attachments/assets/0fc155f5-7ac2-4e6e-b6cc-9d12036821b9" />
+
 
 ## DESIGN STEPS
-### STEP 1: 
-
-Write your own steps
-
-### STEP 2: 
+### STEP 1:   Load data, create word/tag mappings, and group sentences.
 
 
 
-### STEP 3: 
+### STEP 2:  Convert sentences to index sequences, pad to fixed length, and split into training/testing sets.
 
 
 
-### STEP 4: 
+### STEP 3: Define dataset and DataLoader for batching.
 
 
 
-### STEP 5: 
+### STEP 4: Build a bidirectional LSTM model for sequence tagging.
 
 
 
-### STEP 6: 
+### STEP 5: Train the model over multiple epochs, tracking loss.
+
+
+
+### STEP 6: Evaluate model accuracy, plot loss curves, and visualize predictions on a sample.
 
 
 
@@ -35,34 +37,61 @@ Write your own steps
 
 ## PROGRAM
 
-### Name:
+### Name: MUTHU POORNIMA P
 
-### Register Number:
+### Register Number: 212224240099
 
 ```python
 class BiLSTMTagger(nn.Module):
     # Include your code here
+    def __init__(self,vocab_size,tagset_size,embedding_dim=50,hidden_dim=100):
+      super(BiLSTMTagger, self).__init__()
+      self.embedding=nn.Embedding(vocab_size,embedding_dim)
+      self.dropout=nn.Dropout(0.1)
+      self.lstm=nn.LSTM(embedding_dim,hidden_dim,batch_first=True,bidirectional=True)
+      self.fc=nn.Linear(hidden_dim*2,tagset_size)
+    def forward(self,x):
+      x=self.embedding(x)
+      x=self.dropout(x)
+      x,_=self.lstm(x)
+      return self.fc(x)
 
-
-
-
-
-
-
-    def forward(self, input_ids):
-        # Include your code here
         
 
 
-model = 
-loss_fn = 
-optimizer = 
+model = BiLSTMTagger(len(word2idx)+1,len(tag2idx)).to(device)
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(),lr=0.001)
 
 
 # Training and Evaluation Functions
 def train_model(model, train_loader, test_loader, loss_fn, optimizer, epochs=3):
-    # Include the training and evaluation functions
+     train_losses,val_losses=[],[]
+    for epoch in range(epochs):
+      model.train()
+      total_loss=0
+      for batch in train_loader:
+        input_ids=batch["input_ids"].to(device)
+        labels=batch["labels"].to(device)
+        optimizer.zero_grad()
+        outputs=model(input_ids)
+        loss=loss_fn(outputs.view(-1,len(tag2idx)),labels.view(-1))
+        loss.backward()
+        optimizer.step()
+        total_loss+=loss.item()
+      train_losses.append(total_loss)
 
+      model.eval()
+      val_loss=0
+      with torch.no_grad():
+        for batch in test_loader:
+          input_ids=batch["input_ids"].to(device)
+          labels=batch["labels"].to(device)
+          outputs=model(input_ids)
+          loss=loss_fn(outputs.view(-1,len(tag2idx)),labels.view(-1))
+          val_loss+=loss.item()
+      val_losses.append(val_loss)
+      print(f"Epoch {epoch+1}: Train Loss = {total_loss:.4f},Val Loss = {val_loss:.4f}")
 
 
     return train_losses, val_losses
@@ -74,10 +103,14 @@ def train_model(model, train_loader, test_loader, loss_fn, optimizer, epochs=3):
 
 ## Loss Vs Epoch Plot
 
-Include your plot here
+<img width="963" height="621" alt="image" src="https://github.com/user-attachments/assets/1e4d5439-b3cf-4ef7-bd9b-11578843690c" />
+
 
 ### Sample Text Prediction
-Include your sample text prediction here
+
+<img width="474" height="519" alt="image" src="https://github.com/user-attachments/assets/5d37cb44-b628-47a6-8a8d-e6e76c216359" />
+
 
 ## RESULT
-Include your result here
+
+This program has been executed successfully.
