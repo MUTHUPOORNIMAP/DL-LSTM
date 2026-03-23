@@ -5,6 +5,8 @@ To develop an LSTM-based model for recognizing the named entities in the text.
 
 ## Problem Statement and Dataset
 
+Develop a deep learning model using LSTM to perform Named Entity Recognition (NER) on text data. Preprocess the dataset by tokenizing text and encoding words and labels. Train and evaluate the model to accurately identify entities such as names, locations, and organizations.
+
 <img width="592" height="479" alt="image" src="https://github.com/user-attachments/assets/0fc155f5-7ac2-4e6e-b6cc-9d12036821b9" />
 
 
